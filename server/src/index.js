@@ -1,4 +1,3 @@
-// File: src/index.js
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -10,8 +9,21 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
+// CORS Options
+const whitelist = ['http://104.250.155.51', 'http://localhost:3001']; // Add allowed origins
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || whitelist.includes(origin)) {
+      callback(null, true); // Allow request
+    } else {
+      callback(new Error('Not allowed by CORS')); // Deny request
+    }
+  },
+  credentials: true, // Allow cookies or credentials if needed
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions)); // Enable CORS
 app.use(bodyParser.json());
 
 // Import routes
